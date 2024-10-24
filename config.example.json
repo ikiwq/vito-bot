@@ -1,0 +1,26 @@
+{
+  "clientId": "0000000000000000000",
+  "minecraft": {
+    "servers": [
+      {
+        "name": "My Minecraft Server",
+        "address": "0.0.0.0",
+        "port": 25565
+      }
+    ]
+  },
+  "commands": {
+    "listenEverywhere": false,
+    "defaultChannelId": "0000000000000000000",
+    "channelIds": ["0000000000000000000"]
+  },
+  "actions": {
+    "onInit": {
+      "sendMessage": true,
+      "messageType": "GREETING"
+    }
+  },
+  "logger": {
+    "level": "INFO"
+  }
+}
