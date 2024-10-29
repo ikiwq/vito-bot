@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "deploy-commands": "tsx watch src/cmd/deploy-commands.ts",
-    "start": "tsx watch src/index.ts",
-    "dev": "npm run deploy-commands && npm run start",
+    "deploy-commands": "npx tsx src/cmd/deploy-commands.ts",
+    "init-db": "npx tsx src/cmd/init-db.ts",
+    "dev": "npm run init-db && npm run deploy-commands && npx tsx src/index.ts",
     "build": "tsup src/index.ts --minify"
   },
   "keywords": [],
@@ -14,7 +14,8 @@
   "description": "",
   "dependencies": {
     "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "tsup": "^8.3.0",

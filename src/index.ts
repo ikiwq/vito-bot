@@ -4,9 +4,10 @@ import {
   getCommands,
   getDiscordToken,
   loadDotEnv,
-} from "./app-utils";
-import { onInteractionCreate, onReady } from "./actions";
-import { Logger } from "./logger";
+} from "./utils/app-utils";
+import { Logger } from "./utils/logger";
+import onReady from "./handlers/on-ready";
+import onInteractionCreate from "./handlers/on-interaction-create";
 
 loadDotEnv();
 

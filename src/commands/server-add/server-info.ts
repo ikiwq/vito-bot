@@ -6,9 +6,9 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from "discord.js";
-import { GLOBAL_CONFIG } from "../../globals";
-import { getMinecraftServerInformation } from "../../services";
 import { MinecraftServerStatusResponse } from "../../ts/interfaces/minecraft.interfaces";
+import { getMinecraftServerInformation, getPublicIP } from "../../services/web";
+import { getServerByName } from "../../services/sqlrepo/server";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,39 +19,43 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("server-name")
-        .setDescription("The server name")
-        .addChoices(
-          GLOBAL_CONFIG.minecraft.servers.map((server) => {
-            return { name: server.name, value: server.name };
-          })
-        )
+        .setDescription("The server's name")
         .setRequired(true)
     ),
   async execute(interaction: ChatInputCommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const serverName = interaction.options.getString("server-name");
 
-    const server = GLOBAL_CONFIG.minecraft.servers.find(
-      (server) => server.name === serverName
-    );
-
+    const server = await getServerByName(serverName!);
     if (!server || !serverName) {
-      await interaction.reply("Couldn't find a server matching this name :(");
-      return;
+      throw new Error(
+        `Could not find a server with name ${serverName}. Have you typed it correctly?`
+      );
     }
 
-    let serverAddress = server.address;
+    await interaction.editReply(`Fetching information for ${server}...`);
+
+    let serverAddress =
+      server.ip_address === "0.0.0.0" ? await getPublicIP() : server.ip_address;
     let serverPort = server.port;
 
-    const info = await getMinecraftServerInformation(serverAddress, serverPort);
+    const info = await getMinecraftServerInformation(
+      serverAddress!,
+      serverPort
+    );
 
     if (!info) {
-      await interaction.reply("I couldn't get this server's information :(");
+      await interaction.editReply(
+        "I couldn't get this server's information :("
+      );
       return;
     }
 
     const [embed, attachment] = getMinecraftEmbed(serverName, info);
 
-    await interaction.reply({
+    await interaction.editReply({
+      message: "",
       embeds: [embed],
       files: attachment ? [attachment] : [],
     });

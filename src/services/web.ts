@@ -1,5 +1,5 @@
-import { PublicIpResponse } from "./ts/interfaces/ip.interfaces";
-import { MinecraftServerStatusResponse } from "./ts/interfaces/minecraft.interfaces";
+import { PublicIpResponse } from "../ts/interfaces/ip.interfaces";
+import { MinecraftServerStatusResponse } from "../ts/interfaces/minecraft.interfaces";
 
 const IP_API = "https://api.ipify.org?format=json";
 const MINECRAFT_SERVER_API = "https://api.mcstatus.io/v2/status/java/";
@@ -27,12 +27,12 @@ async function getPublicIP(): Promise<string | null> {
  */
 async function getMinecraftServerInformation(
   address: string,
-  port?: number
+  port?: string
 ): Promise<MinecraftServerStatusResponse | null> {
   try {
     let fetchUrl = MINECRAFT_SERVER_API + address;
     if (port) {
-      fetchUrl += ":" + port.toString();
+      fetchUrl += ":" + port;
     }
     const response = await fetch(fetchUrl);
     const data: MinecraftServerStatusResponse = await response.json();

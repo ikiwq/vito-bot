@@ -1,4 +1,4 @@
-import { GLOBAL_CONFIG } from "./globals";
+import { GLOBAL_CONFIG } from "../globals";
 
 type LogLevel = {
   LEVEL: number;
@@ -38,7 +38,7 @@ class Logger {
   private constructor() {}
 
   static trace(...args: string[]): void {
-    const message = "TRACE: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " TRACE: " + args.join("");
 
     if (LOG_LEVELS.TRACE.LEVEL < this.LOG_LEVEL.LEVEL) {
       return;
@@ -47,7 +47,7 @@ class Logger {
   }
 
   static debug(...args: string[]): void {
-    const message = "DEBUG: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " DEBUG: " + args.join("");
 
     if (LOG_LEVELS.DEBUG < this.LOG_LEVEL) {
       return;
@@ -56,7 +56,7 @@ class Logger {
   }
 
   static info(...args: string[]): void {
-    const message = "INFO: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " INFO: " + args.join("");
 
     if (LOG_LEVELS.INFO < this.LOG_LEVEL) {
       return;
@@ -65,7 +65,7 @@ class Logger {
   }
 
   static warn(...args: string[]): void {
-    const message = "WARN: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " WARN: " + args.join("");
 
     if (LOG_LEVELS.WARN < this.LOG_LEVEL) {
       return;
@@ -74,7 +74,7 @@ class Logger {
   }
 
   static error(...args: string[]): void {
-    const message = "ERROR: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " ERROR: " + args.join("");
 
     if (LOG_LEVELS.ERROR < this.LOG_LEVEL) {
       return;
@@ -83,13 +83,17 @@ class Logger {
   }
 
   static fatal(...args: string[]): void {
-    const message = "FATAL: " + Date.now().toString() + " " + args.join("");
+    const message = this.getDate() + " FATAL: " + args.join("");
 
     if (LOG_LEVELS.FATAL < this.LOG_LEVEL) {
       return;
     }
     console.error(message);
     process.exit(1);
+  }
+
+  static getDate(): string {
+    return new Date().toLocaleString();
   }
 }
 

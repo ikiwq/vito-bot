@@ -1,6 +1,3 @@
-import path from "path";
-import fs from "fs";
-import { BotCommand } from "../ts/interfaces/bot.interfaces";
 import {
   REST,
   RESTPostAPIChatInputApplicationCommandsJSONBody,
@@ -8,38 +5,25 @@ import {
 } from "discord.js";
 import { GLOBAL_CONFIG } from "../globals";
 import dotenv from "dotenv";
+import { getCommands } from "../utils/app-utils";
+import { Logger } from "../utils/logger";
 
 dotenv.config();
 
-const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] =
+  getCommands().map((command) => command.data.toJSON());
 
-const foldersPath = path.join(__dirname, "../commands");
-const commandFolders = fs.readdirSync(foldersPath);
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".ts"));
-
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command: BotCommand = require(filePath);
-
-    if ("data" in command && "execute" in command) {
-      commands.push(command.data.toJSON());
-    } else {
-      console.warn(
-        `WARNING: Command at ${filePath} is missing properties. Check that both "data" and "execute" properties are defined.`
-      );
-    }
-  }
+if (!process.env.DISCORD_TOKEN) {
+  Logger.fatal(
+    "Invalid discord token! Have you set it inside the env variables"
+  );
 }
 
-const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 
 (async () => {
   try {
-    console.log(
+    Logger.debug(
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
@@ -48,7 +32,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
       { body: commands }
     );
 
-    console.log(
+    Logger.debug(
       `Successfully reloaded ${
         (data as any[]).length
       } application (/) commands.`
