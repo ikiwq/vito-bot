@@ -14,6 +14,7 @@ The default modules currently available include:
 # Future plans and To-Do List
 
 Since VitoBot is a new project, its modules and features are currently limited. We're actively working to expand its capabilities. Planned features include:
+- A wiki page to help less experience users and developers to configure or extends the bot functionalities
 - A custom-built integration with Minecraft chat
 - A role-based moderation system for Minecraft servers, managed through Discord
 - Audio and music command support, with integration for Spotify and other platforms
