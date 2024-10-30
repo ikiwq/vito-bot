@@ -12,7 +12,8 @@ module.exports = {
     .setDescription("Returns the current ip address of the server")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction: ChatInputCommandInteraction<CacheType>) {
-    await interaction.reply("Searching for the server's IP address...");
+    await interaction.deferReply();
+
     const ip = await getPublicIP();
     if (!ip) {
       await interaction.editReply("I'm sorry, but I couldn't find anything :(");
